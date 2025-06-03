@@ -18,7 +18,7 @@ const NavigationBar: React.FC = () => {
 						</li>
 					</ul>
 					<a
-						className='rounded-full px-4 py-2 bg-purple-500 text-white hover:bg-purple-600 transition-colors duration-300'
+						className='rounded-full px-4 py-2 bg-slate-800 text-white hover:bg-slate-900 transition-colors duration-500 text-sm md:text-base'
 						href='#contact'>
 						Contact
 					</a>
