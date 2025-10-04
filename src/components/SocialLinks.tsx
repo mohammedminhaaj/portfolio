@@ -4,15 +4,20 @@ import {
 	Linkedin,
 	Loader2,
 	Mail,
-	Phone,
 	RefreshCcw,
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import ResumeButton from './ResumeButton';
 
 import { useEffect, useState, type JSX } from 'react';
 import type { SocialLink } from '../types';
-import { getSocialLinks } from '../services/api';
+import {
+	ErrorStatus,
+	getSocialLinks,
+	LoadingStatus,
+	SuccessStatus,
+	type RequestStatus,
+} from '../services/api';
 import { childItems, parentContainer } from '../helpers/animation';
 
 const iconMap: Record<string, JSX.Element> = {
@@ -22,46 +27,19 @@ const iconMap: Record<string, JSX.Element> = {
 	instagram: <Instagram className='size-4 md:size-5 md:stroke-1' />,
 };
 
-const SocialLinks: React.FC = () => {
-	const [{ data, error }, setSocialLinks] = useState<{
-		data: SocialLink[] | null;
-		error: string | null;
-	}>({
-		data: null,
-		error: null,
-	});
-	const [retry, setRetry] = useState(false);
+type SocialLinksProps = {
+	data: SocialLink[] | null;
+	error: string | null;
+	setRetry: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-	const fetchSocialLinks = async () => {
-		try {
-			setSocialLinks({
-				data: null,
-				error: null,
-			});
-
-			const { documents } = await getSocialLinks();
-			setSocialLinks((prev) => ({
-				...prev,
-				data: documents as unknown as SocialLink[],
-			}));
-		} catch {
-			setSocialLinks({
-				data: [],
-				error: 'Failed to fetch social links',
-			});
-		}
-	};
-
-	useEffect(() => {
-		fetchSocialLinks();
-		setRetry(false);
-	}, [retry]);
-
+const SocialLinks: React.FC<SocialLinksProps> = ({ data, error, setRetry }) => {
 	if (!data) {
 		return (
 			<motion.span
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
+				exit={{ opacity: 0, y: -20 }}
 				transition={{ duration: 0.5 }}>
 				<Loader2 className='animate-spin size-4 text-white' />
 			</motion.span>
@@ -74,6 +52,7 @@ const SocialLinks: React.FC = () => {
 				className='text-xs rounded-full text-red-500 bg-white w-fit px-2.5 py-1.5 flex space-x-2 items-center-safe'
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
+				exit={{ opacity: 0, y: -20 }}
 				transition={{ duration: 0.5 }}>
 				<p>{error}</p>
 				<button
@@ -89,11 +68,11 @@ const SocialLinks: React.FC = () => {
 	}
 
 	return (
-		<motion.section
+		<motion.div
 			initial='hidden'
 			animate='visible'
 			variants={parentContainer}
-			className='flex gap-3 flex-wrap overflow-hidden'>
+			className='flex gap-3 flex-wrap'>
 			{data.map((link) => {
 				const icon = iconMap[link.name];
 				return (
@@ -107,10 +86,63 @@ const SocialLinks: React.FC = () => {
 					</motion.a>
 				);
 			})}
-
 			<ResumeButton />
-		</motion.section>
+		</motion.div>
 	);
 };
 
-export default SocialLinks;
+const SocialLinksWrapper: React.FC = () => {
+	const [{ data, error, status }, setSocialLinks] = useState<{
+		data: SocialLink[] | null;
+		error: string | null;
+		status: RequestStatus;
+	}>({
+		data: null,
+		error: null,
+		status: LoadingStatus,
+	});
+	const [retry, setRetry] = useState(false);
+
+	const fetchSocialLinks = async () => {
+		try {
+			setSocialLinks({
+				data: null,
+				error: null,
+				status: LoadingStatus,
+			});
+
+			const { documents } = await getSocialLinks();
+			setSocialLinks((prev) => ({
+				...prev,
+				data: documents as unknown as SocialLink[],
+				status: SuccessStatus,
+			}));
+		} catch {
+			setSocialLinks({
+				data: [],
+				error: 'Failed to fetch social links',
+				status: ErrorStatus,
+			});
+		}
+	};
+
+	useEffect(() => {
+		fetchSocialLinks();
+		setRetry(false);
+	}, [retry]);
+
+	return (
+		<section className='flex items-center justify-start min-h-10 overflow-hidden'>
+			<AnimatePresence mode='wait'>
+				<SocialLinks
+					key={status} // Key to trigger re-mount on status change
+					data={data}
+					error={error}
+					setRetry={setRetry}
+				/>
+			</AnimatePresence>
+		</section>
+	);
+};
+
+export default SocialLinksWrapper;

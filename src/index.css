@@ -5,3 +5,9 @@
 @theme {
   --font-lora: "Lora", sans-serif;
 }
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+.title {
+  @apply text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight uppercase
+}
