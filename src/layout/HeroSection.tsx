@@ -24,10 +24,10 @@ const HeroSection: React.FC = () => {
 				transition={{ duration: 0.5 }}
 				loading='lazy'
 				src={heroImageUrl}
-				alt='Hero Image'
-				className='absolute inset-0 object-cover h-full w-full -z-10 transition-all duration-500 group-hover:scale-105 brightness-60'
+				alt='Hero Background'
+				className='absolute inset-0 object-cover h-full w-full transition-all duration-500 group-hover:scale-105 brightness-60'
 			/>
-			<h1 className='title w-full lg:w-1/2 uppercase'>
+			<h1 className='title w-full lg:w-1/2 uppercase z-10'>
 				<span className='sr-only'>{heroText}</span>
 				<motion.span
 					initial='hidden'
@@ -46,7 +46,7 @@ const HeroSection: React.FC = () => {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.9 }}
-				className='text-sm md:text-base'>
+				className='text-sm md:text-base z-10'>
 				I build smart, scalable web apps that do more than just work —
 				they wow. From sleek UIs to powerful APIs, I make ideas happen.
 			</motion.h2>

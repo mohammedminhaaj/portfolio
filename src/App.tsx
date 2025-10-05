@@ -1,14 +1,17 @@
-import AboutMe from './layout/AboutMe';
+import AboutMeSection from './layout/AboutMeSection';
+import ExperienceSection from './layout/ExperienceSection';
 import HeroSection from './layout/HeroSection';
 import NavigationBar from './layout/NavigationBar';
+import { ThemeProvider } from './store/ThemeProvider';
 
 function App() {
 	return (
-		<main>
+		<ThemeProvider>
 			{/* <NavigationBar /> */}
 			<HeroSection />
-			<AboutMe />
-		</main>
+			<AboutMeSection />
+			<ExperienceSection />
+		</ThemeProvider>
 	);
 }
 

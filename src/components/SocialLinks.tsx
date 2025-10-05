@@ -132,7 +132,7 @@ const SocialLinksWrapper: React.FC = () => {
 	}, [retry]);
 
 	return (
-		<section className='flex items-center justify-start min-h-10 overflow-hidden'>
+		<section className='flex items-center justify-start min-h-10 overflow-hidden z-10'>
 			<AnimatePresence mode='wait'>
 				<SocialLinks
 					key={status} // Key to trigger re-mount on status change

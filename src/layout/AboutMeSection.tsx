@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { PUBLIC_BUCKET_ID, storage } from '../services/appwrite';
 import { motion } from 'motion/react';
 import { childItems, parentContainer } from '../helpers/animation';
+import { useThemeContext } from '../store/ThemeProvider';
 
 const firstBentoImageId = '68e0dcd9002161fd3a23';
 const secondBentoImageId = '68e159810004a5293b26';
@@ -15,18 +15,16 @@ const secondBentoImageUrl = storage.getFileView(
 	secondBentoImageId
 );
 
-const AboutMe: React.FC = () => {
-	const [darkMode, setDarkMode] = useState(false);
-	const toggleDarkMode = () => setDarkMode((prev) => !prev);
+const AboutMeSection: React.FC = () => {
+	const { toggleDarkMode } = useThemeContext();
 	const totalYears = new Date().getFullYear() - 2019;
 	return (
 		<motion.section
 			initial={{ opacity: 0 }}
 			whileInView={{ opacity: 1 }}
 			transition={{ duration: 0.5 }}
-			data-theme={darkMode ? 'dark' : ''}
-			className='min-h-screen p-10 md:p-20 space-y-3 dark:bg-black transition-colors duration-500 w-full flex flex-col justify-center-safe'>
-			<h1 className='title dark:text-white'>About Me.</h1>
+			className='min-h-screen p-10 md:p-20 gap-5 w-full flex flex-col justify-center-safe'>
+			<h1 className='title'>About Me.</h1>
 			<motion.div
 				initial='hidden'
 				whileInView='visible'
@@ -81,4 +79,4 @@ const AboutMe: React.FC = () => {
 		</motion.section>
 	);
 };
-export default AboutMe;
+export default AboutMeSection;
